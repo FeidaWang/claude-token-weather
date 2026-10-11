@@ -30,14 +30,14 @@ import type { Forecast, Level, Slice } from './forecast'
 import { SKY_COLUMNS, skyCells, skySvg } from './sky'
 import { parseTranscript, transcriptPath } from './history'
 
-const PANE = 'token-weather'
-const TITLE = 'Token Weather'
+const PANE = 'context-forecast'
+const TITLE = 'Context Forecast'
 
-const samples = atom({ plugin: 'token-weather', key: 'samples' } as const, [])
-const reading = atom({ plugin: 'token-weather', key: 'reading' } as const, null)
-const lastTurn = atom({ plugin: 'token-weather', key: 'lastTurn' } as const, null)
-const bandMode = atom({ plugin: 'token-weather', key: 'bandMode' } as const, 'full' as BandMode)
-const lastLevel = atom({ plugin: 'token-weather', key: 'lastLevel' } as const, -1)
+const samples = atom({ plugin: 'context-forecast', key: 'samples' } as const, [])
+const reading = atom({ plugin: 'context-forecast', key: 'reading' } as const, null)
+const lastTurn = atom({ plugin: 'context-forecast', key: 'lastTurn' } as const, null)
+const bandMode = atom({ plugin: 'context-forecast', key: 'bandMode' } as const, 'full' as BandMode)
+const lastLevel = atom({ plugin: 'context-forecast', key: 'lastLevel' } as const, -1)
 
 type $ = EngineInterface
 
@@ -134,7 +134,7 @@ async function afterMeasure($: $): Promise<void> {
 
 async function setBandMode($: $, mode: BandMode): Promise<void> {
   await update($, bandMode, () => mode)
-  if (mode === 'hidden') $.ui.toast('Token Weather hidden · /weather brings it back')
+  if (mode === 'hidden') $.ui.toast('Context Forecast hidden · /weather brings it back')
 }
 
 async function togglePane($: $): Promise<string> {
@@ -204,7 +204,7 @@ export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     await $.command.register({
       name: 'weather',
-      description: 'Token Weather: show the band; `forecast` opens the forecast, `mini` minimizes, `hide` hides',
+      description: 'Context Forecast: show the band; `forecast` opens the forecast, `mini` minimizes, `hide` hides',
       argumentHint: '[forecast|mini|hide]',
       immediate: true,
     })
@@ -267,16 +267,16 @@ export const register: Register = on => {
     }
     if (arg === 'hide') {
       await setBandMode($, 'hidden')
-      return { text: 'Token Weather hidden.' }
+      return { text: 'Context Forecast hidden.' }
     }
     if (arg === 'mini') {
       await setBandMode($, 'compact')
-      return { text: 'Token Weather minimized to the footer.' }
+      return { text: 'Context Forecast minimized to the footer.' }
     }
     // Bare /weather brings the band back, whatever state it was in.
     await measure($, false)
     await setBandMode($, 'full')
-    return { text: 'Token Weather band shown.' }
+    return { text: 'Context Forecast band shown.' }
   })
 
   // ---- the band above the prompt ----------------------------------------------
@@ -310,7 +310,7 @@ export const register: Register = on => {
     if (!x) {
       return (
         <Box flexDirection="row" gap={2} alignItems="center">
-          <Text>☀️ Token Weather · the forecast starts with Claude's first reply</Text>
+          <Text>☀️ Context Forecast · the forecast starts with Claude's first reply</Text>
           <Box flexGrow={1} />
           {hideButton}
         </Box>
@@ -514,7 +514,7 @@ export const register: Register = on => {
       return (
         <Box flexDirection="column" gap={1}>
           <Box flexDirection="row" gap={2} alignItems="center">
-            <Text bold>☀️ Token Weather</Text>
+            <Text bold>☀️ Context Forecast</Text>
             <Box flexGrow={1} />
             {actions}
           </Box>

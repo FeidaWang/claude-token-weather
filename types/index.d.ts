@@ -29,7 +29,7 @@ export type WeatherTurn = { input: number; output: number; cacheRead: number; ca
 
 declare module 'claude-code' {
   interface PluginState {
-    'token-weather': {
+    'context-forecast': {
       samples: WeatherSample[]
       reading: WeatherReading | null
       lastTurn: WeatherTurn | null

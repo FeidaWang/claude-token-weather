@@ -55,7 +55,7 @@ test('band and forecast draw on terminal and desktop', async ($, on) => {
 
   for (const surface of SURFACES) {
     const band = await $.ui.mount({
-      plugin: 'token-weather',
+      plugin: 'context-forecast',
       surface,
       component: 'AbovePrompt',
       props: {
@@ -78,7 +78,7 @@ test('band and forecast draw on terminal and desktop', async ($, on) => {
     // selector; its percentage brings the band back.
     await band.press({ key: 'mini' })
     expect(await band.find({ key: 'forecast' })).toBeUndefined()
-    const footer = await $.ui.mount({ plugin: 'token-weather', surface, component: 'SessionMode', props: { modes: [] } })
+    const footer = await $.ui.mount({ plugin: 'context-forecast', surface, component: 'SessionMode', props: { modes: [] } })
     expect(await footer.find({ key: 'expand' })).toBeDefined()
     await footer.press({ key: 'expand' })
     expect(await footer.find({ key: 'expand' })).toBeUndefined()
@@ -88,7 +88,7 @@ test('band and forecast draw on terminal and desktop', async ($, on) => {
 
     // Narrow: one line of the essentials, the stat blocks dropped.
     const slim = await $.ui.mount({
-      plugin: 'token-weather',
+      plugin: 'context-forecast',
       surface,
       component: 'AbovePrompt',
       props: { hasSurvey: false, isWorking: false, maxRows: 10, bodyColumns: 50, scroll: { offset: 0, bodyRows: 10 }, view: {} },
@@ -99,12 +99,12 @@ test('band and forecast draw on terminal and desktop', async ($, on) => {
     await slim.unmount()
 
     const pane = await $.ui.mount({
-      plugin: 'token-weather',
+      plugin: 'context-forecast',
       surface,
       component: 'Pane',
-      requestId: 'token-weather',
+      requestId: 'context-forecast',
       props: {
-        title: 'Token Weather',
+        title: 'Context Forecast',
         isFocused: false,
         bodyColumns: 80,
         placement: 'dock',
@@ -161,7 +161,7 @@ test('every condition draws its sky on the terminal and desktop', async ($, on) 
     await $.session.measure({ context: usageAt(t).context, rateLimits: [], changed: ['context'] })
     for (const surface of SURFACES) {
       const band = await $.ui.mount({
-        plugin: 'token-weather',
+        plugin: 'context-forecast',
         surface,
         component: 'AbovePrompt',
         props: { hasSurvey: false, isWorking: false, maxRows: 10, bodyColumns: 140, scroll: { offset: 0, bodyRows: 10 }, view: {} },
@@ -196,11 +196,11 @@ test('/weather shows the band; /weather forecast opens the pane', async ($, on) 
   const run = (args: string) => $.command.run({ command: 'weather', args, origin: { kind: 'composer' } as never, presentation })
   await run('hide')
   const props = { hasSurvey: false, isWorking: false, maxRows: 10, bodyColumns: 140, scroll: { offset: 0, bodyRows: 10 }, view: {} }
-  let band = await $.ui.mount({ plugin: 'token-weather', surface: 'desktop', component: 'AbovePrompt', props })
+  let band = await $.ui.mount({ plugin: 'context-forecast', surface: 'desktop', component: 'AbovePrompt', props })
   expect(await band.find({ key: 'forecast' })).toBeUndefined()
   await band.unmount()
   expect((await run('')).text).toMatch(/band shown/)
-  band = await $.ui.mount({ plugin: 'token-weather', surface: 'desktop', component: 'AbovePrompt', props })
+  band = await $.ui.mount({ plugin: 'context-forecast', surface: 'desktop', component: 'AbovePrompt', props })
   expect(await band.find({ key: 'forecast' })).toBeDefined()
   await band.unmount()
   expect((await run('forecast')).text).toMatch(/Forecast (opened|closed)/)

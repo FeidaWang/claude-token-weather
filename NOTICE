@@ -1,0 +1,15 @@
+Context Forecast
+Copyright 2026 Feida Wang
+
+This product is derived from the `token-weather` sample mod in
+https://github.com/anthropics/claude-code-playground (claude-code/mods/token-weather),
+Copyright Anthropic, PBC, licensed under the Apache License, Version 2.0.
+
+Changes made by Feida Wang: renamed to Context Forecast; extended the mod with
+a transcript-based history backfill (hooks/history.ts), a forecast model and
+formatters (hooks/forecast.ts), animated condition icons (hooks/sky.ts), a
+forecast pane, minimize/hide modes and rate-limit/cost readouts; added tests,
+documentation, a listing icon, and packaging for the Claude plugin directory.
+
+Context Forecast is an independent project. It is not an Anthropic product and
+is not endorsed by Anthropic.

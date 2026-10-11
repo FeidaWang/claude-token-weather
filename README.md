@@ -1,4 +1,4 @@
-# Token Weather
+# Context Forecast
 
 A weather forecast for your Claude Code context window. Instead of a raw token count, you get a condition you can read at a glance, and a warning *before* auto-compaction hits.
 
@@ -20,8 +20,8 @@ The forecast extrapolates the average growth of your last few turns to estimate 
 ## Install
 
 ```
-/plugin marketplace add FeidaWang/claude-token-weather
-/plugin install token-weather@token-weather
+/plugin marketplace add FeidaWang/context-forecast
+/plugin install context-forecast@context-forecast
 ```
 
 Restart Claude Code to apply.
@@ -66,4 +66,6 @@ Source: `hooks/forecast.ts` (levels, forecasting, formatting), `hooks/history.ts
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+Context Forecast is derived from the `token-weather` sample mod in [anthropics/claude-code-playground](https://github.com/anthropics/claude-code-playground/tree/main/claude-code/mods/token-weather) (Apache-2.0). It is an independent project, not an Anthropic product.

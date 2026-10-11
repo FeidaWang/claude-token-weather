@@ -1,16 +1,16 @@
 {
-  "name": "token-weather",
-  "displayName": "Token Weather",
-  "version": "0.1.1",
+  "name": "context-forecast",
+  "displayName": "Context Forecast",
+  "version": "0.1.2",
   "description": "A weather forecast for your context window: conditions above the prompt, a /weather outlook pane, storm warnings before compaction",
   "author": {
     "name": "Feida Wang",
     "email": "founder@rsiagent.app",
     "url": "https://github.com/FeidaWang"
   },
-  "homepage": "https://github.com/FeidaWang/claude-token-weather",
-  "repository": "https://github.com/FeidaWang/claude-token-weather",
-  "license": "MIT",
+  "homepage": "https://github.com/FeidaWang/context-forecast",
+  "repository": "https://github.com/FeidaWang/context-forecast",
+  "license": "Apache-2.0",
   "keywords": [
     "context",
     "tokens",

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- Renamed from Token Weather to Context Forecast (plugin id `context-forecast`).
+- License is Apache-2.0, matching the upstream sample this mod derives from; added NOTICE with attribution.
+
 ## 0.1.1
 
 - Add listing icon; remove the unused `types` manifest field.

@@ -43,7 +43,7 @@ test('/weather hide, mini, and bare restore the band', async ($, on) => {
   await $.session.measure({ context: usage(60_000).context, rateLimits: [], changed: ['context'] })
   const presentation = { isFullscreen: false, columns: 140 } as never
   const run = (args: string) => $.command.run({ command: 'weather', args, origin: { kind: 'composer' } as never, presentation })
-  const mount = () => $.ui.mount({ plugin: 'token-weather', surface: 'terminal', component: 'AbovePrompt', props })
+  const mount = () => $.ui.mount({ plugin: 'context-forecast', surface: 'terminal', component: 'AbovePrompt', props })
 
   expect((await run('hide')).text).toMatch(/hidden/)
   let band = await mount()
@@ -67,7 +67,7 @@ test('/weather hide, mini, and bare restore the band', async ($, on) => {
 test('before the first reply the band invites rather than guesses', async ($, on) => {
   mock.clock(on, { now: 1_700_000_000_000 })
   on('session.usage', () => ({ value: undefined }))
-  const band = await $.ui.mount({ plugin: 'token-weather', surface: 'desktop', component: 'AbovePrompt', props })
+  const band = await $.ui.mount({ plugin: 'context-forecast', surface: 'desktop', component: 'AbovePrompt', props })
   expect(await band.find({ type: 'Text', text: /first reply/ })).toBeDefined()
   await band.unmount()
 })

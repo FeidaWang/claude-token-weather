@@ -1,10 +1,10 @@
 {
-  "name": "token-weather",
-  "description": "Token Weather: a context-window forecast for Claude Code",
+  "name": "context-forecast",
+  "description": "Context Forecast: a context-window forecast for Claude Code",
   "owner": { "name": "Feida Wang", "email": "founder@rsiagent.app" },
   "plugins": [
     {
-      "name": "token-weather",
+      "name": "context-forecast",
       "source": "./",
       "description": "A weather forecast for your context window: conditions above the prompt, a /weather outlook pane, storm warnings before compaction"
     }
