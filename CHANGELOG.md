@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.5
+
+- Add privacy policy, support, and documentation links to the manifest.
+
 ## 0.1.4
 
 - Stop starting a process: oversized transcripts (over 4 MiB) are no longer read with `tail`; history backfill is skipped for them.
