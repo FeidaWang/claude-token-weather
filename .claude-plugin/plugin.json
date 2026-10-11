@@ -1,7 +1,7 @@
 {
   "name": "context-forecast",
   "displayName": "Context Forecast",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A weather forecast for your context window: conditions above the prompt, a /weather outlook pane, storm warnings before compaction",
   "author": {
     "name": "Feida Wang",
@@ -19,5 +19,6 @@
     "usage",
     "forecast",
     "weather"
-  ]
+  ],
+  "types": "./types/index.d.ts"
 }

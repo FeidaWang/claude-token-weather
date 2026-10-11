@@ -6,7 +6,8 @@ fail=0
 bad() { echo "✗ $1"; fail=1; }
 ok() { echo "✓ $1"; }
 
-claude plugin validate . >/dev/null 2>&1 && ok "claude plugin validate" || bad "claude plugin validate"
+claude plugin validate .claude-plugin/plugin.json 2>&1 | grep -q "✔ Validation passed" && ok "validate plugin + hooks" || bad "validate plugin + hooks"
+claude plugin validate .claude-plugin/marketplace.json 2>&1 | grep -q "✔ Validation passed" && ok "validate marketplace" || bad "validate marketplace"
 claude plugin test . >/dev/null 2>&1 && ok "claude plugin test" || bad "claude plugin test"
 
 [ -f LICENSE ] && ok "LICENSE present" || bad "LICENSE missing"

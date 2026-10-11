@@ -39,13 +39,21 @@ const lastTurn = atom({ plugin: 'context-forecast', key: 'lastTurn' } as const, 
 const bandMode = atom({ plugin: 'context-forecast', key: 'bandMode' } as const, 'full' as BandMode)
 const lastLevel = atom({ plugin: 'context-forecast', key: 'lastLevel' } as const, -1)
 
-type $ = EngineInterface
+type Api = EngineInterface
 
 // The terminal band's sky is repainted from a timer: where it is mounted and
 // what it shows, as of its last drawing.
 const sky: { site: string | null; level: Level | null; frame: number } = { site: null, level: null, frame: 0 }
 
-async function animateSky($: $): Promise<void> {
+async function tickSky($: Api): Promise<void> {
+  try {
+    await animateSky($)
+  } catch {
+    // A missed frame is harmless: the next tick repaints.
+  }
+}
+
+async function animateSky($: Api): Promise<void> {
   if (!sky.site || !sky.level) return
   sky.frame += 1
   const r = await $.ui.blit({ requestId: sky.site, key: 'sky', cells: skyCells(sky.level, sky.frame) })
@@ -56,7 +64,7 @@ async function animateSky($: $): Promise<void> {
 
 // Rebuilds the history from this session's transcript, so a resumed session or
 // a reload starts with its whole past instead of one point.
-async function backfill($: $): Promise<void> {
+async function backfill($: Api): Promise<void> {
   try {
     const [id, cwd, root, configDir, home] = await Promise.all([
       $.session.id(),
@@ -93,7 +101,7 @@ async function backfill($: $): Promise<void> {
 
 // Reads the session's figures (and the local /context estimate for the
 // auto-compact point and the biggest categories) into state.
-async function measure($: $, isTurnEnd: boolean): Promise<void> {
+async function measure($: Api, isTurnEnd: boolean): Promise<void> {
   const usage = await $.session.usage({ breakdown: 'summary' })
   const b = usage.context.breakdown
   const next: WeatherReading = {
@@ -118,7 +126,7 @@ async function measure($: $, isTurnEnd: boolean): Promise<void> {
   await afterMeasure($)
 }
 
-async function afterMeasure($: $): Promise<void> {
+async function afterMeasure($: Api): Promise<void> {
   const f = forecast(await read($, samples), await read($, reading))
   if (!f) return
   const before = await read($, lastLevel)
@@ -132,12 +140,17 @@ async function afterMeasure($: $): Promise<void> {
   }
 }
 
-async function setBandMode($: $, mode: BandMode): Promise<void> {
+async function setBandMode($: Api, mode: BandMode): Promise<void> {
   await update($, bandMode, () => mode)
   if (mode === 'hidden') $.ui.toast('Context Forecast hidden · /weather brings it back')
 }
 
-async function togglePane($: $): Promise<string> {
+async function refresh($: Api): Promise<void> {
+  await backfill($)
+  await measure($, false)
+}
+
+async function togglePane($: Api): Promise<string> {
   const isOpen = (await $.ui.panes()).some(p => p.id === PANE)
   if (isOpen) {
     await $.ui.close({ id: PANE })
@@ -159,7 +172,7 @@ type Facts = {
   elapsed: number
 }
 
-async function facts($: $): Promise<Facts | null> {
+async function facts($: Api): Promise<Facts | null> {
   const r = await read($, reading)
   const f = forecast(await read($, samples), r)
   if (!f || !r) return null
@@ -200,7 +213,7 @@ function resetIn(resetsAt: string | undefined, now: number): string | null {
   return Number.isFinite(ms) ? fmtIn(ms) : null
 }
 
-export const register: Register = on => {
+export function register(on: Parameters<Register>[0]): void {
   on('session.start', async ($, e, next) => {
     await $.command.register({
       name: 'weather',
@@ -210,7 +223,7 @@ export const register: Register = on => {
     })
     const ran = await next(e)
     $.ui.status(undefined)
-    $.clock.every(450, () => void animateSky($).catch(() => undefined))
+    $.clock.every(450, () => tickSky($))
     await backfill($)
     await measure($, true)
     return ran
@@ -481,13 +494,13 @@ export const register: Register = on => {
     const isTerminal = e.surface === 'terminal'
     const { Box, Text, Button } = $.ui.resolve(e)
     const close = () => void $.ui.close({ id: PANE })
-    const refresh = () => void (async () => (await backfill($), await measure($, false)))()
+    const refreshPane = () => void refresh($)
     const nextMode: BandMode = mode === 'full' ? 'compact' : mode === 'compact' ? 'hidden' : 'full'
     const cycleBand = () => void setBandMode($, nextMode)
 
     const actions = (
       <Box flexDirection="row" gap={1}>
-        <Button key="refresh" label="Refresh" plain hotkey={isTerminal ? 'r' : undefined} onPress={refresh} />
+        <Button key="refresh" label="Refresh" plain hotkey={isTerminal ? 'r' : undefined} onPress={refreshPane} />
         <Button key="band" label={`Band: ${mode === 'full' ? 'Full' : mode === 'compact' ? 'Compact' : 'Hidden'}`} plain hotkey={isTerminal ? 'b' : undefined} onPress={cycleBand} />
         {isTerminal && <Button key="close" label="Close" hotkey="x" role="dismiss" onPress={close} />}
       </Box>

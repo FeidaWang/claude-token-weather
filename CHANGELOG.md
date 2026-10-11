@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3
+
+- Restore the `types` manifest field (needed to declare plugin state).
+- Write `register` as a function declaration, give the API type a non-`$` name, and move timer and refresh logic into top-level helpers so the directory's analyzer can follow every `$` use.
+
 ## 0.1.2
 
 - Renamed from Token Weather to Context Forecast (plugin id `context-forecast`).
