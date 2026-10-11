@@ -1,7 +1,7 @@
 {
   "name": "token-weather",
   "displayName": "Token Weather",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A weather forecast for your context window: conditions above the prompt, a /weather outlook pane, storm warnings before compaction",
   "author": {
     "name": "Feida Wang",
@@ -11,6 +11,13 @@
   "homepage": "https://github.com/FeidaWang/claude-token-weather",
   "repository": "https://github.com/FeidaWang/claude-token-weather",
   "license": "MIT",
-  "keywords": ["context", "tokens", "compaction", "statusline", "usage", "forecast", "weather"],
-  "types": "./types/index.d.ts"
+  "keywords": [
+    "context",
+    "tokens",
+    "compaction",
+    "statusline",
+    "usage",
+    "forecast",
+    "weather"
+  ]
 }

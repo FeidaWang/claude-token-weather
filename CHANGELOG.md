@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1
+
+- Add listing icon; remove the unused `types` manifest field.
+- README now states exactly what the mod reads, runs, and sends.
+
 ## 0.1.0
 
 - Weather band above the prompt: condition (Clear, Fair, Cloudy, Showers, Storm, Clearing), turns left to compaction, per-turn growth, rate-limit and cost readouts.

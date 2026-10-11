@@ -41,9 +41,18 @@ The band also has Forecast, minimize and hide buttons. On the terminal, `f` and 
 
 Claude Code terminal and desktop surfaces. It is a Claude Code *mod* (UI and hooks), so it has no effect in chat or Cowork.
 
-## Privacy and data handling
+## What it reads, runs, and sends
 
-Everything runs locally; the plugin makes no network requests and sends no data anywhere. It reads the session's usage figures and, to rebuild history on resume, the current session's transcript file (token counts and timestamps only). See [PRIVACY.md](PRIVACY.md).
+Everything runs locally. The mod sends nothing anywhere: it makes no network requests, bundles no MCP server, and calls no model.
+
+- **Reads session usage.** The context size, window, rate-limit percentages and session cost that Claude Code reports for the current session (`$.session.usage`).
+- **Reads two environment variables, `HOME` and `CLAUDE_CONFIG_DIR`**, only to work out where Claude Code keeps the current session's transcript (`<config dir>/projects/<project>/<session id>.jsonl`). No credential or secret is read, and the values are never stored or sent.
+- **Reads the current session's transcript file** (`$.fs.read`) when a session starts or is resumed, to rebuild the token history. Only token counts, request ids, and timestamps are used; message text is never kept or shown.
+- **Runs one program, `tail`, and only for very large transcripts.** If the transcript is over the file-read size bound, the mod runs `tail -c 4000000 <transcript path>` (an argument list, no shell) to read the last 4 MB instead. It runs nothing else.
+- **Handles the `/weather` command itself** (`forecast`, `mini`, `hide`, or no argument). It does not touch permissions, agents, settings, or Remote Control.
+- **Keeps state** (recent token samples, last reading, display mode) in Claude Code's own plugin state.
+
+See [PRIVACY.md](PRIVACY.md) for the data-handling summary.
 
 ## Development
 
