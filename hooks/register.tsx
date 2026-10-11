@@ -8,7 +8,7 @@ import {
   chartSvg,
   endTurn,
   fmtIn,
-  fmtTokens,
+  fmtCount,
   fmtUsd,
   forecast,
   gaugeCells,
@@ -84,14 +84,9 @@ async function backfill($: Api): Promise<void> {
       }
     }
     if (!path) return
-    let text: string
-    try {
-      text = await $.fs.read(path)
-    } catch {
-      // Over the 4 MiB read bound: the tail holds the recent past.
-      const tail = await $.process.run(['tail', '-c', '4000000', path])
-      text = tail.stdout.slice(tail.stdout.indexOf('\n') + 1)
-    }
+    // A transcript over the 4 MiB read bound throws; the forecast then builds
+    // from live readings instead of the past.
+    const text = await $.fs.read(path)
     const history = parseTranscript(text)
     if (history.length > 0) await update($, samples, () => history)
   } catch {
@@ -399,7 +394,7 @@ export function register(on: Parameters<Register>[0]): void {
     })
     const gaugeWidth = cols >= 110 ? 22 : 16
     const gaugeLabel = left ? `${isAlert ? '⚠ ' : ''}${left}` : 'to auto-compact'
-    const head = block('head', `${f.windowPercent}%  ${f.level.name}`, `${fmtTokens(f.tokens)} of ${fmtTokens(f.window)}`)
+    const head = block('head', `${f.windowPercent}%  ${f.level.name}`, `${fmtCount(f.tokens)} of ${fmtCount(f.window)}`)
     const gaugeBlock: Block = {
       key: 'gauge',
       width: Math.max(gaugeWidth, cellWidth(gaugeLabel)),
@@ -420,7 +415,7 @@ export function register(on: Parameters<Register>[0]): void {
       const warn = l.percentUsed >= 75 ? '⚠ ' : ''
       optional.push(block(`limit-${l.kind}`, `${warn}${Math.round(l.percentUsed)}%`, `${limitName(l.kind)} limit${reset && l.percentUsed >= 50 ? ` · ${reset}` : ''}`))
     }
-    if (f.rate !== null) optional.push(block('rate', `+${fmtTokens(f.rate)}`, 'per turn'))
+    if (f.rate !== null) optional.push(block('rate', `+${fmtCount(f.rate)}`, 'per turn'))
     if (r.usd !== null) optional.push(block('cost', fmtUsd(r.usd), x.perHour !== null ? `${fmtUsd(x.perHour)}/h` : 'session'))
     if (x.cacheHit !== null) optional.push(block('cache', `${x.cacheHit}%`, 'cache hit'))
 
@@ -552,16 +547,16 @@ export function register(on: Parameters<Register>[0]): void {
     )
     const estimate = f.rateBasis > 0 ? `from ${f.rateBasis} turn${f.rateBasis === 1 ? '' : 's'}` : 'needs a turn of growth'
     const tiles = [
-      tile('ctx', 'Context', `${f.windowPercent}%`, `${fmtTokens(f.tokens)} of ${fmtTokens(f.window)}`),
+      tile('ctx', 'Context', `${f.windowPercent}%`, `${fmtCount(f.tokens)} of ${fmtCount(f.window)}`),
       tile(
         'left',
         f.isCompactionLimit ? 'Until auto-compact' : 'Until full',
-        f.turnsLeft !== null ? `~${f.turnsLeft} turns` : fmtTokens(Math.max(0, f.limit - f.tokens)),
-        f.turnsLeft !== null ? `${fmtTokens(Math.max(0, f.limit - f.tokens))} · est. ${estimate}` : estimate,
+        f.turnsLeft !== null ? `~${f.turnsLeft} turns` : fmtCount(Math.max(0, f.limit - f.tokens)),
+        f.turnsLeft !== null ? `${fmtCount(Math.max(0, f.limit - f.tokens))} · est. ${estimate}` : estimate,
       ),
-      tile('rate', 'Average growth', f.rate !== null ? `+${fmtTokens(f.rate)}/turn` : '—', f.perRequest !== null ? `+${fmtTokens(f.perRequest)} per request` : ''),
+      tile('rate', 'Average growth', f.rate !== null ? `+${fmtCount(f.rate)}/turn` : '—', f.perRequest !== null ? `+${fmtCount(f.perRequest)} per request` : ''),
       f.lastTurn
-        ? tile('turn', 'Last turn', `${f.lastTurn.growth >= 0 ? '+' : ''}${fmtTokens(f.lastTurn.growth)}`, `${f.lastTurn.requests} requests · ${fmtTokens(f.lastTurn.output)} out`)
+        ? tile('turn', 'Last turn', `${f.lastTurn.growth >= 0 ? '+' : ''}${fmtCount(f.lastTurn.growth)}`, `${f.lastTurn.requests} requests · ${fmtCount(f.lastTurn.output)} out`)
         : null,
       x.cacheHit !== null ? tile('cache', 'Cache hit', `${x.cacheHit}%`, 'last turn') : null,
       r.usd !== null
@@ -610,7 +605,7 @@ export function register(on: Parameters<Register>[0]): void {
         />
       )
       if (slices.length > 0) {
-        stack = <Svg key="stack" source={stackSvg(slices, used, px)} alt={slices.map(sl => `${sl.name} ${fmtTokens(sl.tokens)}`).join(', ')} />
+        stack = <Svg key="stack" source={stackSvg(slices, used, px)} alt={slices.map(sl => `${sl.name} ${fmtCount(sl.tokens)}`).join(', ')} />
       }
     }
 
@@ -682,7 +677,7 @@ export function register(on: Parameters<Register>[0]): void {
                   <Text color={sl.color}>■</Text>
                   <Text dimColor> {sl.name}</Text>
                 </Text>,
-                fmtTokens(sl.tokens),
+                fmtCount(sl.tokens),
                 `${Math.round((sl.tokens / used) * 100)}%`,
               ),
             ),

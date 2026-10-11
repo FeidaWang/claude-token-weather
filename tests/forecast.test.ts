@@ -7,7 +7,7 @@ import {
   CLEARING,
   endTurn,
   fmtIn,
-  fmtTokens,
+  fmtCount,
   fmtUsd,
   forecast,
   GOOD,
@@ -63,12 +63,12 @@ test('severity colors rate-limit percentages', async () => {
 })
 
 test('formatters', async () => {
-  expect(fmtTokens(999)).toBe('999')
-  expect(fmtTokens(1000)).toBe('1k')
-  expect(fmtTokens(1500)).toBe('1.5k')
-  expect(fmtTokens(12_000)).toBe('12k')
-  expect(fmtTokens(150_400)).toBe('150k')
-  expect(fmtTokens(1_500_000)).toBe('1.5M')
+  expect(fmtCount(999)).toBe('999')
+  expect(fmtCount(1000)).toBe('1k')
+  expect(fmtCount(1500)).toBe('1.5k')
+  expect(fmtCount(12_000)).toBe('12k')
+  expect(fmtCount(150_400)).toBe('150k')
+  expect(fmtCount(1_500_000)).toBe('1.5M')
   expect(fmtUsd(1.234)).toBe('$1.23')
   expect(fmtUsd(12.34)).toBe('$12.3')
   expect(limitName('five_hour')).toBe('5h')

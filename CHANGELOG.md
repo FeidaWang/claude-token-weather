@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.4
+
+- Stop starting a process: oversized transcripts (over 4 MiB) are no longer read with `tail`; history backfill is skipped for them.
+- Rename the internal `fmtTokens` helper to `fmtCount`.
+
 ## 0.1.3
 
 - Restore the `types` manifest field (needed to declare plugin state).

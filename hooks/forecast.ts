@@ -173,7 +173,7 @@ export function endTurn(samples: readonly WeatherSample[], tokens: number, at: n
   return [...list.slice(0, -1), { ...last, isTurnEnd: true }]
 }
 
-export function fmtTokens(n: number): string {
+export function fmtCount(n: number): string {
   if (n >= 1e6) return `${trim(n / 1e6)}M`
   if (n >= 1e3) return `${n >= 1e5 ? Math.round(n / 1e3) : trim(n / 1e3)}k`
   return `${Math.round(n)}`
@@ -402,7 +402,7 @@ export function chartSvg(samples: readonly WeatherSample[], f: Forecast, w: numb
     `<line x1="${left}" x2="${w - right}" y1="${ly}" y2="${ly}" stroke="${BAD}" stroke-width="1.5" stroke-dasharray="4 4" stroke-opacity=".75"/>`,
     `<text x="${left - 6}" y="${(+ly + 4).toFixed(1)}" text-anchor="end" fill="${MUTED}">100%</text>`,
     `<text x="${w - right}" y="${(+ly - 5).toFixed(1)}" text-anchor="end" fill="${MUTED}">` +
-      `${f.isCompactionLimit ? 'auto-compact' : 'window full'} · ${fmtTokens(f.limit)}</text>`,
+      `${f.isCompactionLimit ? 'auto-compact' : 'window full'} · ${fmtCount(f.limit)}</text>`,
   )
   if (xy.length >= 2) {
     const { line, area } = areaPath(xy, h - bottom)
@@ -421,7 +421,7 @@ export function chartSvg(samples: readonly WeatherSample[], f: Forecast, w: numb
       parts.push(`<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${h - bottom}" y2="${h - bottom + 4}" stroke="${MUTED}" stroke-opacity=".6"/>`)
       parts.push(
         `<circle cx="${x.toFixed(1)}" cy="${xy[i]!.y.toFixed(1)}" r="7" fill="transparent">` +
-          `<title>End of a turn · ${fmtTokens(p.tokens)} (${Math.round(p.f * 100)}% of auto-compact)</title></circle>`,
+          `<title>End of a turn · ${fmtCount(p.tokens)} (${Math.round(p.f * 100)}% of auto-compact)</title></circle>`,
       )
     }
   })
@@ -435,14 +435,14 @@ export function chartSvg(samples: readonly WeatherSample[], f: Forecast, w: numb
         const o = f.outlook[i]!
         parts.push(
           `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="${o.level.color}" stroke="${o.level.color}" stroke-opacity=".25" stroke-width="6">` +
-            `<title>In ${o.step} turn${o.step === 1 ? '' : 's'} · ~${fmtTokens(o.tokens)} (${Math.round(o.fraction * 100)}%) · ${o.level.name}</title></circle>`,
+            `<title>In ${o.step} turn${o.step === 1 ? '' : 's'} · ~${fmtCount(o.tokens)} (${Math.round(o.fraction * 100)}%) · ${o.level.name}</title></circle>`,
         )
       })
       parts.push(`<text x="${w - right}" y="${h - 4}" text-anchor="end" fill="${MUTED}">+5 turns</text>`)
     }
     parts.push(
       `<circle cx="${end.x.toFixed(1)}" cy="${end.y.toFixed(1)}" r="4.5" fill="${color}" stroke="${color}" stroke-opacity=".3" stroke-width="6">` +
-        `<title>Now · ${fmtTokens(f.tokens)} (${Math.round(f.fraction * 100)}% of auto-compact)</title></circle>`,
+        `<title>Now · ${fmtCount(f.tokens)} (${Math.round(f.fraction * 100)}% of auto-compact)</title></circle>`,
     )
     if (end.x > left + 60 && end.x < w - right - 70) {
       parts.push(`<text x="${end.x.toFixed(1)}" y="${h - 4}" text-anchor="middle" fill="${MUTED}">now</text>`)
