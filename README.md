@@ -20,7 +20,7 @@ The forecast extrapolates the average growth of your last few turns to estimate 
 ## Install
 
 ```
-/plugin marketplace add FeidaWang/token-weather
+/plugin marketplace add FeidaWang/claude-token-weather
 /plugin install token-weather@token-weather
 ```
 

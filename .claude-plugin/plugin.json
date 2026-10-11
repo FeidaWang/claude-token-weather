@@ -8,8 +8,8 @@
     "email": "founder@rsiagent.app",
     "url": "https://github.com/FeidaWang"
   },
-  "homepage": "https://github.com/FeidaWang/token-weather",
-  "repository": "https://github.com/FeidaWang/token-weather",
+  "homepage": "https://github.com/FeidaWang/claude-token-weather",
+  "repository": "https://github.com/FeidaWang/claude-token-weather",
   "license": "MIT",
   "keywords": ["context", "tokens", "compaction", "statusline", "usage", "forecast", "weather"],
   "types": "./types/index.d.ts"
